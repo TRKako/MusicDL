@@ -3,9 +3,9 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <gdiplus.h>  // Añadido para soporte de PNG
+#include <gdiplus.h>
 
-#pragma comment(lib, "gdiplus.lib")  // Enlazar con la biblioteca GDI+
+#pragma comment(lib, "gdiplus.lib")
 #pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup")
 
 HWND hwnd;
@@ -13,7 +13,7 @@ std::wstring textPrimary = L"Actualizando MusicDL...";
 std::wstring textSecondary = L"";
 int retryCount = 1;
 bool showClosingMessage = false;
-HBITMAP hBitmap = NULL;  // Handle para la imagen
+HBITMAP hBitmap = NULL;
 Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 ULONG_PTR gdiplusToken;
 
@@ -60,22 +60,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
     SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
     
-    // Cargar la imagen como PNG
     hBitmap = LoadPNGResource(L".\\server\\bin\\MusicDLICO.png");
     
-    // Si no se puede cargar, intentar con ruta absoluta o relativa
     if (!hBitmap) {
-        // Intentar con ruta relativa al directorio actual
         wchar_t currentDir[MAX_PATH];
         GetCurrentDirectory(MAX_PATH, currentDir);
         std::wstring fullPath = std::wstring(currentDir) + L"\\MusicDLICO.png";
         hBitmap = LoadPNGResource(fullPath.c_str());
         
-        // Si aún falla, intentar como ICO
         if (!hBitmap) {
             hBitmap = (HBITMAP)LoadImage(
                 NULL, L"MusicDLICO.ico", IMAGE_ICON, 
-                64, 64,  // Tamaño fijo para el icono
+                64, 64,
                 LR_LOADFROMFILE
             );
         }
@@ -101,11 +97,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     return 0;
 }
 
-// Función para cargar específicamente PNG usando GDI+
 HBITMAP LoadPNGResource(const wchar_t* imagePath) {
     HBITMAP hBitmap = NULL;
     
-    // Cargar la imagen usando GDI+
     Gdiplus::Bitmap* bitmap = Gdiplus::Bitmap::FromFile(imagePath);
     if (bitmap) {
         bitmap->GetHBITMAP(Gdiplus::Color(0, 0, 0, 0), &hBitmap);
@@ -221,21 +215,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             RECT clientRect;
             GetClientRect(hwnd, &clientRect);
 
-            // Fondo transparente
             SetBkMode(hdc, TRANSPARENT);
             SetTextColor(hdc, RGB(255, 255, 255));
 
-            // Fuente primaria
             HFONT hFontPrimary = CreateFont(24, 0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
                 DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY,
                 VARIABLE_PITCH, L"Inconsolata");
             SelectObject(hdc, hFontPrimary);
 
-            // Posición del texto principal
             RECT textRectPrimary = { 20, 30, clientRect.right - 20, clientRect.bottom };
             DrawText(hdc, textPrimary.c_str(), -1, &textRectPrimary, DT_CENTER | DT_TOP);
 
-            // Dibujar la imagen si existe
             if (hBitmap) {
                 HDC hdcMem = CreateCompatibleDC(hdc);
                 SelectObject(hdcMem, hBitmap);
@@ -243,24 +233,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 BITMAP bmp;
                 GetObject(hBitmap, sizeof(BITMAP), &bmp);
 
-                int imgX = (clientRect.right - bmp.bmWidth) / 2;  // Centrar horizontalmente
-                int imgY = 70;  // Espaciado entre textos
+                int imgX = (clientRect.right - bmp.bmWidth) / 2; 
+                int imgY = 70;
 
                 BitBlt(hdc, imgX, imgY, bmp.bmWidth, bmp.bmHeight, hdcMem, 0, 0, SRCCOPY);
                 DeleteDC(hdcMem);
             }
 
-            // Fuente secundaria
             HFONT hFontSecondary = CreateFont(18, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
                 DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY,
                 VARIABLE_PITCH, L"Inconsolata");
             SelectObject(hdc, hFontSecondary);
 
-            // Posición del texto secundario
             RECT textRectSecondary = { 20, 150, clientRect.right - 20, clientRect.bottom };
             DrawText(hdc, textSecondary.c_str(), -1, &textRectSecondary, DT_CENTER | DT_TOP);
 
-            // Limpiar
             DeleteObject(hFontPrimary);
             DeleteObject(hFontSecondary);
 
