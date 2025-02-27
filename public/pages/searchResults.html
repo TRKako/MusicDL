@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es-cl">
+<head id="app-head">
+
+    <title>MusicDL - Resultados de busqueda</title>
+    <meta name="description" content="Inicio"/>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+        });
+
+        document.addEventListener("contextmenu", function (e){
+  e.preventDefault();
+}, false);
+    </script>
+    <script defer src="../assets/js/commonBase.js"></script>
+    <script type="text/javascript" defer src="../assets/js/client.js"></script>
+</head>
+
+<style>
+    html{
+        zoom: 80%;
+    }
+</style>
+
+    <body class="overflow-y-auto">
+        <main>
+
+            <!-- <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div> -->
+            
+            <!-- Modal de progreso -->
+            <div class="modal fade" id="downloadingMD" tabindex="-1" aria-labelledby="downloadingMDLabel" aria-hidden="true" style="z-index: 99999;">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="downloadingMDLabel">Descargando...</h1>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <p id="progress-text">0%</p>
+                    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width: 0%;"></div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+
+            <div id="msgToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">MusicDL</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Descarga Terminada!
+                </div>
+            </div>
+
+            <div id="errToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">MusicDL</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Enlace del video no encontrado!
+                </div>
+            </div>
+
+            <div id="failedDLToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">MusicDL</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Descarga Fallida, intente de nuevo por favor!
+                </div>
+            </div>
+            
+            <div id="noWifiToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Estado de Conexión</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Conexión perdida, compruebe su conexión a Internet.
+                </div>
+            </div>
+        
+            <div id="wifiRestoredToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Estado de Conexión</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    En linea de nuevo.
+                </div>
+            </div>
+
+
+            <form id="searchMn" class="barManual">
+                <div class="searchManual">
+                  <input type="text" name="queryS" id="queryS" placeholder="Descarga Manual: Pega aquí un enlace" required>
+                </div>
+                <div class="btn-container searchMnualBTN">
+                  <button type="button" class="manual-btn btn btn-outline-primary" id="openModalBtn">
+                    Descarga Manual
+                  </button>
+                  <button type="button" class="manual-clear-btn btn btn-outline-primary" onclick="document.getElementById('queryS').value = ''">
+                    Borrar
+                  </button>
+                </div>
+              </form>
+
+            <script type="text/javascript" src="../assets/js/netScript.js" defer></script>
+
+
+            <button class="btnOptionPos btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                Opciones de fondo
+            </button>
+
+            <div class="offcanvas offcanvas-start" data-bs-theme="dark" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                <div class="offcanvas-header">
+                    <h1 class="offcanvas-title" id="offcanvasScrollingLabel">
+                        Opciones
+                    </h1>
+                    
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <hr class="solidLine">
+                <div class="offcanvas-body">
+                    <label for="bgVerticalPos" class="form-label">Posición vertical del fondo</label>
+                    <input type="range" class="form-range" id="bgVerticalPos" min="0" max="100" value="50">
+                
+                    <label for="bgVerticalPos" class="form-label">Posición horizontal del fondo</label>
+                    <input type="range" class="form-range" id="bgHorizontalPos" min="0" max="100" value="50">
+                
+                    <label for="bgZoom" class="form-label">Zoom</label>
+                    <input type="range" class="form-range" id="bgZoom" min="50" max="1000" value="100">
+
+                    <div class="btnsPos">
+                        <button type="button" id="bgResetPos" class="btnSize btn btn-outline-warning"> 
+                            Resetear posición
+                        </button>
+                        <button type="button" id="bgResetZoom" class="btnSize btn btn-outline-warning"> 
+                            Resetear Zoom
+                        </button>
+                        <button type="button" id="bgReset" class="btnSize btn btn-outline-warning"> 
+                            Restaurar Fondo
+                        </button>
+                    </div>
+                    
+                    <button class="btnSize btn btn-outline-danger allbtn" type="button" id="bgResetAll"> 
+                        Resetear todo
+                    </button>
+                </div>
+
+            </div>
+            <style>
+                .offcanvas-backdrop {
+                    background-color: transparent !important;
+                    transition: opacity 0.3s ease-in-out; 
+                    
+                }
+                [data-bs-theme="dark"].offcanvas {
+                    transition: background-color 0.2s ease-in-out;
+                    z-index: 9999;
+                }
+              </style>
+            
+
+            <div class="changeBG" id="bgImg">
+                <input class="changeBGbtn btn btn-outline-primary" type="button" value="Cambiar fondo" onclick="document.querySelector('#file').click()">
+                <input class="changeBGbtn" type="file" id="file" style="display: none;" onchange="_ReadImage()">
+              </div>
+
+
+
+            <button type="button" id="buttnBack" class="btnBack btn btn-outline-primary backBtn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-offset="0,5" data-bs-html="true" data-bs-title="Tambien puedes usar <br> ALT + <img class='svgImg' src='../assets/images/leftKey.svg' width='20px'> /  <img class='svgImg' src='../assets/images/rightKey.svg' width='20px'>" onclick="window.history.back();">
+                Volver
+            </button>
+
+            <button type="button" id="homeBtn" class="btn btn-outline-primary homeBtn">
+                <img class="svgImg" src='../assets/images/home.svg' width='20px'>
+            </button>
+
+            <script>
+                document.getElementById('homeBtn').addEventListener('click', function() {
+  
+                window.location.href = '/home'; 
+
+                });
+            </script>
+
+            <button type="button" id="openBtn" class="btn btn-outline-primary openBtn">
+                Abrir Carpeta de descarga
+            </button>
+
+
+
+
+        <div class="resultAlign">
+                <h1>Resultados de búsqueda</h1>
+            <br>
+        <br>
+
+        <div id="results"></div>
+        <div class="bottomSpacing"></div>
+
+        <script>
+        async function abrirCarpeta() {
+            try {
+                const response = await fetch('/openFolder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({}),
+                });
+
+                const result = await response.text();
+                
+                if (!response.ok) {
+                throw new Error(result);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                new bootstrap.Toast(document.getElementById('folderErrToast')).show();
+            }
+            }
+
+            document.getElementById('openBtn').addEventListener('click', abrirCarpeta);
+        </script>
+
+        <script>
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('query');
+            const page = params.get('page') || 1;
+        
+            if (!query) {
+                document.body.innerHTML = '<h4>No se proporcionó un término de búsqueda.</h4>';
+            } else {
+                fetch(`/search/rawDataResults?query=${encodeURIComponent(query)}&page=${page}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const resultsDiv = document.getElementById('results');
+        
+                        if (data.error) {
+                            resultsDiv.innerHTML = `<h4>Error: ${data.error}</h4>`;
+                            return;
+                        }
+        
+                        if (data == "") {
+                            resultsDiv.innerHTML = `<h4>Sin resultados</h4>`;
+                            return;
+                        }
+        
+                        const getMatchScore = (title, query) => {
+                        const titleWords = title.toLowerCase().split(/\s+/);
+                        const queryWords = query.toLowerCase().split(/\s+/);
+                        let score = 0;
+
+                        queryWords.forEach(queryWord => {
+                            titleWords.forEach(titleWord => {
+                                if (titleWord.includes(queryWord)) {
+                                    score++;
+                                }
+                            });
+                        });
+
+                        return score;
+                    };
+
+                    const matchedSongs = [];
+                    const unmatchedSongs = [];
+
+                    data.forEach(song => {
+                        const matchScore = getMatchScore(song.title, query);
+
+                        if (matchScore > 0) {
+                            matchedSongs.push({ ...song, matchScore });
+                        } else {
+                            unmatchedSongs.push({ ...song, matchScore: -1 });
+                        }
+                    });
+
+                    matchedSongs.sort((a, b) => b.matchScore - a.matchScore);
+
+                    unmatchedSongs.sort(() => Math.random() - 0.5);
+
+                    const sortedSongs = [...matchedSongs, ...unmatchedSongs];
+        
+                        resultsDiv.innerHTML = '';
+        
+                        sortedSongs.forEach(song => {
+                            const songElement = document.createElement('div');
+                            songElement.classList.add('song');
+                            
+                            const artistsLinks = song.artists.map(artist => {
+                            const artistLink = document.createElement('a');
+                            artistLink.href = `/search?query=${encodeURIComponent(artist.name)}`;
+                            artistLink.textContent = artist.name;
+
+                            artistLink.addEventListener('click', function(event) {
+                                event.preventDefault();
+                                
+                                const queryField = document.getElementById('query');
+                                queryField.value = artist.name;
+                                window.location.href = `/search?query=${encodeURIComponent(artist.name)}`;
+                            });
+
+                            return artistLink.outerHTML;
+                        }).join(', ');
+
+                            songElement.innerHTML = `
+                                <div>
+                                    <h3>${song.title}</h3>
+                                    <img src="${song.thumbnailUrl}" alt="${song.title}" class="sngPoster" onerror="this.onerror=null; this.src='../assets/images/no-thumb.png';">
+                                    <p> Duración ー ${song.duration.label || 'Sin datos sobre la duración de la canción.'}</p>
+                                    <a>ver más de </a>${artistsLinks}
+                                    <h3>${song.isExplicit ? "Canción Explicita." : ""}</h3>
+                                    <a class="sngSyn" href="https://music.youtube.com/browse/${song.album.id}" target=”_blank” >Album: ${song.album.name || 'Sin datos'}</a>
+                                    <button type="button" class="btn btn-outline-info sngWatch" data-bs-toggle="modal" data-bs-target="#videoModal" data-song-title="${song.title}" data-song-duration="${song.duration.label || 'Sin datos sobre la duración de la canción.'}" data-song-album="${song.album.name || 'Sin datos'}" data-song-explicit="${song.isExplicit ? "Canción Explicita." : ""}" data-song-link="https://www.youtube.com/embed/${song.youtubeId}//?&;amp;;autoplay=1&;loop=1&;controls=1" data-song-rawURL="https://www.youtube.com/watch?v=${song.youtubeId}">
+                                        Escuchar / Descagar
+                                    </button>
+                                </div>
+                            `;
+                            resultsDiv.appendChild(songElement);
+                        });
+                            const extractVideoId = (url) => {
+                                const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com\/(?:watch\?.*v=|embed\/|v\/|shorts\/|live\/)|youtu\.be\/|music\.youtube\.com\/watch\?.*v=)([a-zA-Z0-9_-]{11})/;
+                                const match = url.match(ytRegex);
+                                return match ? match[1] : null;
+                            };
+                            
+                            const setupModalListeners = () => {
+                                const modal = document.getElementById('videoModal');
+                                
+                                modal.addEventListener('show.bs.modal', function (event) {
+                                    let songTitle, songLink, songRawURL;
+                                    const button = event.relatedTarget;
+
+                                    if (button) {
+                                        songTitle = button.getAttribute('data-song-title');
+                                        songLink = button.getAttribute('data-song-link');
+                                        songRawURL = button.getAttribute('data-song-rawURL');
+
+                                    } else {
+                                        
+                                        const manualUrl = document.getElementById('queryS').value.trim(); // Cambiado aquí
+                                        const videoId = extractVideoId(manualUrl);
+                                        
+                                        songTitle = "Canción Manual";
+                                        songLink = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&controls=1`;
+                                        songRawURL = `https://www.youtube.com/watch?v=${videoId}`;
+                                    }
+
+                                    const modalTitle = modal.querySelector('.modal-title');
+                                    const modalBody = modal.querySelector('.modal-body');
+                                    modalTitle.textContent = songTitle;
+                                    modalBody.innerHTML = `
+                                        <iframe
+                                            src="${songLink}"
+                                            style="border:0; width:100%; height:400px;"
+                                            allowfullscreen
+                                        ></iframe>
+                                        <button class="btn btn-outline-primary mt-3 sngDownload" data-song-link="${songRawURL}">
+                                            Descargar Canción
+                                        </button>
+                                    `;
+                                });
+
+                                modal.addEventListener('click', async (event) => {
+                                    if (event.target.classList.contains('sngDownload')) {
+                                        const songRawURL = event.target.getAttribute('data-song-link');
+
+                                        try {
+                                            const progressModal = new bootstrap.Modal('#downloadingMD');
+                                            progressModal.show();
+
+                                            try {
+                                                const songLink = songRawURL;
+                                                            console.log("Descarga iniciada en ", songLink);
+                                                            const progressModal = new bootstrap.Modal(document.getElementById('downloadingMD'));
+                                                            progressModal.show();
+
+                                                            const response = await fetch('/songDL', {
+                                                                method: 'POST',
+                                                                headers: { 'Content-Type': 'application/json' },
+                                                                body: JSON.stringify({ link: songLink }),
+                                                            });
+
+                                                            if (!response.ok) throw new Error('Error en el servidor');
+
+                                                            const progressBar = document.querySelector('.progress-bar');
+                                                            const progressText = document.getElementById('progress-text');
+                                                            progressBar.style.width = '0%';
+                                                            progressText.textContent = '0%';
+
+                                                        if (window.downloadInterval) clearInterval(window.downloadInterval);
+                                                            
+                                                            
+                                                        window.downloadInterval = setInterval(async () => {
+                                                        try {
+                                                            const progressResponse = await fetch('/progress?t=' + Date.now());
+                                                            const progressData = await progressResponse.json();
+                                                            const progress = progressData.progress;
+
+                                                            progressBar.style.width = `${progress}%`;
+                                                            progressText.textContent = progress >= 75 && progress < 100 
+                                                            ? "Procesando archivo..." 
+                                                            : `${progress}%`;
+
+                                                            if (progress >= 100) {
+                                                            clearInterval(window.downloadInterval);
+                                                            setTimeout(() => {
+                                                                progressModal.hide();
+                                                                new bootstrap.Toast(document.getElementById('msgToast')).show();
+                                                            }, 1000);
+                                                            }
+                                                        } catch (e) {
+                                                            console.error('Error:', e);
+                                                            clearInterval(window.downloadInterval);
+                                                        }
+                                                        }, 800);
+
+
+                                                        } catch (error) {
+                                                            console.error("Error:", error);
+                                                            new bootstrap.Toast(document.getElementById('failedDLToast')).show();
+                                                            progressModal.hide();
+                                                        }
+                                        } catch (error) {
+                                            console.error("Error:", error);
+                                        }
+                                    }
+                                });
+                            };
+
+                            setupModalListeners();
+
+                            document.getElementById('openModalBtn').addEventListener('click', () => {
+                            const videoUrl = document.getElementById('queryS').value.trim(); // Cambiado de 'query' a 'queryS'
+                            if (!extractVideoId(videoUrl)) {
+                                new bootstrap.Toast(document.getElementById('errToast')).show();
+                                return;
+                            }
+
+                                const modal = new bootstrap.Modal(document.getElementById('videoModal'), {
+                                    relatedTarget: null
+                                });
+                                modal.show();
+                            });
+
+                            // Agregar esto justo después del setupModalListeners();
+                        document.getElementById('searchMn').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        // Activar validación nativa del navegador
+                        if (document.getElementById('queryS').reportValidity()) {
+                            document.getElementById('openModalBtn').click();
+                        }
+                    });
+
+                            document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
+                            document.querySelectorAll('.modal-backdrop').forEach(el => el.parentNode.removeChild(el));
+                        });
+
+        
+                        const modal = document.getElementById('videoModal');
+        
+                        modal.addEventListener('show.bs.modal', function (event) {
+                            const button = event.relatedTarget;
+                            const songTitle = button.getAttribute('data-song-title');
+                            const songDuration = button.getAttribute('data-song-duration');
+                            const songAlbum = button.getAttribute('data-song-album');
+                            const songExplicit = button.getAttribute('data-song-explicit');
+                            const songLink = button.getAttribute('data-song-link');
+                            const songRawURL = button.getAttribute('data-song-rawURL');
+                            
+                            (async () => {
+                                const sngUrl = document.getElementById('sgLink');
+                                const loadingMessage = '<h3 style="position: fixed; float: left; top: 50%; left: 50%; transform: translate(-50%, -100%);">Cargando enlace...</h3>';
+                                sngUrl.innerHTML = loadingMessage;
+        
+                                try {
+                                    sngUrl.innerHTML = ``;
+        
+                                        const modalTitle = modal.querySelector('.modal-title');
+                                        const modalBody = modal.querySelector('.modal-body');
+        
+                                        modalTitle.innerHTML = `<h3>${songTitle}</h3>`;
+
+                                        modalBody.innerHTML = `
+                                            <iframe
+                                                id="sngFrameID"
+                                                src="${songLink}"
+                                                style="border:0px #ffffff hidden;"
+                                                name="${songTitle}"
+                                                scrolling="no"
+                                                frameborder="0"
+                                                marginheight="0px"
+                                                marginwidth="0px"
+                                                height="400px"
+                                                width="600px"
+                                                allowfullscreen
+                                            ></iframe>
+                                            
+                                            <button type="button" class="btn btn-outline-primary sngDownload" id="sngDownload">
+                                        Descargar Canción
+                                            </button>
+                                            `;
+                                } catch (error) {
+                                    console.log(error);
+                                    sngUrl.innerHTML = '<p>Error al cargar el enlace: ' + error + '</p>';
+                                }
+                            })();
+                        });
+                        
+
+                        document.getElementById('videoModal').addEventListener('show.bs.modal', function (event) {
+                            const button = event.relatedTarget;
+                            const songLink = button.getAttribute('data-song-rawURL');
+
+                            if (!songLink) {
+
+                                const msgToast = new bootstrap.Toast(document.getElementById('errToast'));
+                                msgToast.show();
+
+                            return;
+                        }
+
+                            const modal = event.target;
+                            const downloadButton = modal.querySelector('.sngDownload');
+
+                            downloadButton.setAttribute('data-song-link', songLink);
+
+                            downloadButton.removeEventListener('click', handleDownload);
+                            downloadButton.addEventListener('click', handleDownload);
+
+                            async function handleDownload() {
+                                try {
+                                    console.log("Descarga iniciada en ", songLink);
+                                    const progressModal = new bootstrap.Modal(document.getElementById('downloadingMD'));
+                                    progressModal.show();
+
+                                    const response = await fetch('/songDL', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ link: songLink }),
+                                    });
+
+                                    if (!response.ok) throw new Error('Error en el servidor');
+
+                                    const progressBar = document.querySelector('.progress-bar');
+                                    const progressText = document.getElementById('progress-text');
+                                    progressBar.style.width = '0%';
+                                    progressText.textContent = '0%';
+
+                                if (window.downloadInterval) clearInterval(window.downloadInterval);
+                                    
+                                    
+                                window.downloadInterval = setInterval(async () => {
+                                try {
+                                    const progressResponse = await fetch('/progress?t=' + Date.now());
+                                    const progressData = await progressResponse.json();
+                                    const progress = progressData.progress;
+
+                                    progressBar.style.width = `${progress}%`;
+                                    progressText.textContent = progress >= 75 && progress < 100 
+                                    ? "Procesando archivo..." 
+                                    : `${progress}%`;
+
+                                    if (progress >= 100) {
+                                    clearInterval(window.downloadInterval);
+                                    setTimeout(() => {
+                                        progressModal.hide();
+                                        new bootstrap.Toast(document.getElementById('msgToast')).show();
+                                    }, 1000);
+                                    }
+                                } catch (e) {
+                                    console.error('Error:', e);
+                                    clearInterval(window.downloadInterval);
+                                }
+                                }, 800);
+
+
+                                } catch (error) {
+                                    console.error("Error:", error);
+                                    new bootstrap.Toast(document.getElementById('failedDLToast')).show();
+                                    progressModal.hide();
+                                }
+                            }
+                        });
+
+        
+                        $('#videoModal').on('hidden.bs.modal', function () {
+                            const modalTitle = $(this).find('.modal-title');
+                            const modalBody = $(this).find('.modal-body');
+        
+                            modalTitle.empty();
+                            modalBody.empty();
+
+                            modalBody.html('<div id="sgLink"></div> <iframe></iframe>');
+                        });
+                    })
+                    .catch(error => {
+                        document.getElementById('results').innerHTML = '<h4>Hubo un error al cargar los resultados.</h4>';
+                    });
+            }
+        </script>
+    
+        <div class="modal fade overflow-hidden" id="videoModal" tabindex="-1" aria-labelledby="videoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="videoModalLabel"></h5>
+                        <button type="button" class="btn-close svgImg data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="sgLink"></div>
+                                        <iframe></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+        <h5 class="author" style="z-index: 5;">
+            </h5>
+            <div class="footer">
+            <footer>
+                <p>@2025</p>
+            </footer>
+        </div>
+    </body>
+</html>

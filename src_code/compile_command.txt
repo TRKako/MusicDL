@@ -1,0 +1,5 @@
+g++ -o MusicDL.exe musicDL_run.cpp -lshlwapi -lole32 -mwindows -municode
+
+g++ -o MusicDL.exe musicDL_run.cpp -lgdiplus -lshlwapi -lole32 -mwindows
+
+g++ -o MusicDLUpdater.exe updatingMDL_run.cpp -lgdiplus -lshlwapi -lole32 -mwindows -municode

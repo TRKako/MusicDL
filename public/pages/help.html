@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es-cl">
+<head id="app-head">
+
+    <title>MusicDL - Ayuda</title>
+    <meta name="description" content="Inicio"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+});
+
+document.addEventListener("contextmenu", function (e){
+  e.preventDefault();
+}, false);
+
+    </script>
+</head>
+<style>
+    html{
+        zoom: 75%;
+    }
+</style>
+    <body class="overflow-y-scroll">
+        <main>
+            
+            <div id="noWifiToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Estado de Conexión</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Conexión perdida, compruebe su conexión a Internet.
+                </div>
+            </div>
+        
+            <div id="wifiRestoredToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Estado de Conexión</strong>
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    En linea de nuevo.
+                </div>
+            </div>
+            <script type="text/javascript" src="../assets/js/netScript.js" defer></script>
+
+
+            <button class="btnOptionPos btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                Opciones de fondo
+            </button>
+
+            <div class="offcanvas offcanvas-start" data-bs-theme="dark" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                <div class="offcanvas-header">
+                    <h1 class="offcanvas-title" id="offcanvasScrollingLabel">
+                        Opciones
+                    </h1>
+                    
+                    <button type="button" class="btn-close svgImg" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <hr class="solidLine">
+                <div class="offcanvas-body">
+                    <label for="bgVerticalPos" class="form-label">Posición vertical del fondo</label>
+                    <input type="range" class="form-range" id="bgVerticalPos" min="0" max="100" value="50">
+                
+                    <label for="bgVerticalPos" class="form-label">Posición horizontal del fondo</label>
+                    <input type="range" class="form-range" id="bgHorizontalPos" min="0" max="100" value="50">
+                
+                    <label for="bgZoom" class="form-label">Zoom</label>
+                    <input type="range" class="form-range" id="bgZoom" min="50" max="1000" value="100">
+
+                    <div class="btnsPos">
+                        <button type="button" id="bgResetPos" class="btnSize btn btn-outline-warning"> 
+                            Resetear posición
+                        </button>
+                        <button type="button" id="bgResetZoom" class="btnSize btn btn-outline-warning"> 
+                            Resetear Zoom
+                        </button>
+                        <button type="button" id="bgReset" class="btnSize btn btn-outline-warning"> 
+                            Restaurar Fondo
+                        </button>
+                    </div>
+                    
+                    <button class="btnSize btn btn-outline-danger allbtn" type="button" id="bgResetAll"> 
+                        Resetear todo
+                    </button>
+                </div>
+
+            </div>
+            <style>
+                .offcanvas-backdrop {
+                    background-color: transparent !important;
+                    transition: opacity 0.3s ease-in-out; 
+                    
+                }
+                [data-bs-theme="dark"].offcanvas {
+                    transition: background-color 0.2s ease-in-out;
+                    z-index: 9999;
+                }
+              </style>
+            
+
+            <div class="changeBG" id="bgImg">
+                <input class="changeBGbtn btn btn-outline-primary" type="button" value="Cambiar fondo" onclick="document.querySelector('#file').click()">
+                <input class="changeBGbtn" type="file" id="file" style="display: none;" onchange="_ReadImage()">
+              </div>
+
+              <button type="button" id="openBtn" class="btn btn-outline-primary openBtn">
+                Abrir Carpeta de descarga
+            </button>
+
+            <script>
+            async function abrirCarpeta() {
+                try {
+                    const response = await fetch('/openFolder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({}),
+                    });
+
+                    const result = await response.text();
+                    
+                    if (!response.ok) {
+                    throw new Error(result);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    new bootstrap.Toast(document.getElementById('folderErrToast')).show();
+                }
+                }
+
+                document.getElementById('openBtn').addEventListener('click', abrirCarpeta);
+            </script>
+
+
+
+            <button type="button" id="homeBtn" class="helpBtn btn btn-outline-primary backBtn" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-offset="0,5" data-bs-html="true" data-bs-title="Tambien puedes usar <br> ALT + <img class='svgImg' src='../assets/images/leftKey.svg' width='20px'> /  <img class='svgImg' src='../assets/images/rightKey.svg' width='20px'>" onclick="window.history.back();">
+                Volver
+            </button>
+            <script>
+                document.getElementById('homeBtn').addEventListener('click', function() {
+  
+                window.location.href = '/home'; 
+
+                });
+            </script>
+
+
+            <div class="bottomSpacing"></div>
+            
+            <div class="mainsite">
+
+                <h1 style="margin-top: 40px;">
+                    Página de Ayuda
+                </h1>
+
+                <h2 style="margin-top: 45px; text-align: center;">
+                    Problemas y Soluciones
+                </h3>
+
+                <h5 style="padding-left: 50px; padding-right: 30px;">
+                        &nbsp;
+                        <br>
+                    <b>"No puedo cambiar el fondo! / Los botones o barras no funcionan!"</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Esto es debido a que el archivo javascript que controla todo eso cargo muy preturamente, recargar la pagina deberia solucionar el problema (<code>CTRL + R</code>).
+                        <br>
+                        <br>
+                        <br>
+                    <b>"La descarga no comienza! / se demora mucho!"</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Esto es debido a que la velocidad del internet varia demasiado, y el programa debe hacer la conversión entre <code>webm</code> a <code>mp3</code>, solo debes darle su tiempo.
+                        <br>
+                        <br>
+                        <br>
+                    <b>"Puedo cerrar la barra de descarga y buscar más cosas mientras se descarga lo que ya tenia?"</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Si! puedes seguir buscando cosas sin necesidad de estar en el mismo menu todo el tiempo, el programa te avisara cuando se completen tus descargas en la esquina inferior derecha.
+                        <br>
+                        <br>
+                        <br>
+                    <b>"Las imagenes/miniaturas de las canciones no aparecen!, dice 'Miniatura rechazada'!"</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Esto ocurre cuando se hacen demasiados request en poco tiempo, es decir, buscaste o recargaste la misma canción en un tiempo muy corto, esperar unos pocos minutos deberia arreglar el problema y quitar ese "<code>Miniatura rechazada. Intente recargando la página en 2 minutos</code>".
+                        <br>
+                        <br>
+                        <br>
+                    <b>"Conexión perdida, compruebe su conexión a Internet."</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Esto puede pasar en 2 ocaciones, puede pasar cuando el internet de tu PC no responde a la conexión, puede pasar cuando la velocidad es demasiado lenta o cuando tienes una conexión inestable.
+                        <br>
+                        <br>
+                        <br>
+                    <b>"Abrí el programa y me salio el mensaje 'Vaya… no se puede obtener acceso a esta página' "</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Esto ocurre porque el programa no alcanzo a iniciarse bien, para solucionarlo simplemente cierra el programa y vuelve a abrirlo.
+                        <br>
+                        <br>
+                        <br>
+                    <b>"Porque no puedo personalizar la posición del fondo predeterminado?"</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- No se puede porque es la imagen predeterminada, si quieres usarla con todos los ajustes disponibles, debes descargarla y usarla como imagen personalizada, para descargarla tienes que abrir la aplicación (MusicDL), luego ir a tu navegador, como por ejemplo Chrome, Brave etc, y entrar a este enlace <a target="_blank" href="http://localhost:80/uploads/default.jpg">http://localhost:80/uploads/default.jpg</a>, una vez ahí puedes descargar la imagen, y agregarla en la aplicación como imagen personalizada como lo harias con cualquier otra imagen. 
+                        <br>
+                        <br>
+                        <br>
+                    <b>"Puedo cambiar el fondo predeterminado a un fondo predeterminado que yo quiera sin agregar la imagen que quiero como imagen personalizada?"</b>
+                        <br>
+                        <br>
+                    &nbsp;&nbsp;- Si!, esto ya es un poco tecnico pero tienes que ir a el Explorador de archivos. ir a "Este equipo" > "<code>Disco local C:</code>" > "<code>MusicDL</code>" > "<code>public</code>" > "<code>assets</code>" > "<code>uploads</code>" > y reemplazar la imagen "<code>default.jpg</code>" por la que tu quieras (Asegurate que sea jpg, pero sientete libre de probar si png funciona). Tambien puedes copiar esta ruta si no quieres entrar manualmente siempre:<br><br><code>C:\MusicDL\public\assets\uploads\</code>
+                        <br>
+                        <br>
+                        <br>
+                </h5>
+            </div>
+
+            </main>
+
+        <h5 class="author" style="z-index: 5;">
+            <b>@2025</b>
+            </h5>
+    <script defer src="../assets/js/commonBase.js"></script>
+    <script type="text/javascript" defer src="../assets/js/client.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    </body>
+</html>

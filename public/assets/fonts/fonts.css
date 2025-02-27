@@ -1,0 +1,118 @@
+@font-face {
+    font-family: 'ZenKakuGothicNew-Medium';
+    src: url('ZenKakuGothicNew-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ZenKakuGothicNew-Bold';
+    src: url('ZenKakuGothicNew-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Yukarimobile';
+    src: url('Yukarimobile.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RussoOne';
+    src: url('RussoOne-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Fredoka';
+    src: url('Fredoka-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'va11halla';
+    src: url('CyberpunkWaifus.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'FugazOne';
+    src: url('FugazOne-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RammettoOne';
+    src: url('RammettoOne-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MavenPro';
+    src: url('MavenPro-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Exo2';
+    src: url('Exo2-ExtraLight.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'FjallaOne';
+    src: url('FjallaOne-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SmoochSans';
+    src: url('SmoochSans-ExtraLight.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TitilliumWeb';
+    src: url('TitilliumWeb-ExtraLight.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url('Oswald-ExtraLight.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ABeeZee';
+    src: url('ABeeZee-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'MontserratUnderline';
+    src: url('MontserratUnderline-Thin.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Kanit';
+    src: url('Kanit-Thin.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}

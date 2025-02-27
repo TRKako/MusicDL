@@ -1,0 +1,26 @@
+
+.dropdown{
+left: 378%;
+}
+
+.lang-en .dropdown {
+    left: 460%;
+}
+
+.lang-de .dropdown {
+    left: 430%;
+}
+
+.lang-it .dropdown {
+    left: 505%;
+}
+
+.lang-zh .dropdown {
+    line-height: 50px;
+    left: 590%;
+}
+
+.searchbar-pos{
+position: absolute;
+right: 4%;  
+}

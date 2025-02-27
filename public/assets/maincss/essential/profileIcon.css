@@ -1,0 +1,52 @@
+
+.divpfp {
+    z-index: 5;
+    position:relative;
+    top: -600%;
+    left: -25%;
+}
+  
+  
+.uploadpfp{
+z-index: 1;
+position: relative;
+/* bottom: 483%; */
+bottom: 530%;
+right: 109.50%;
+
+
+input[type="file"]{
+    color: transparent;
+}
+}
+
+.userframe{
+bottom: 550%;
+left: -59%;
+height: 129.5%;
+}
+
+.userpfp{
+bottom: 550%;
+left: -30.899%;
+}
+
+.userinpfp{
+opacity: 0%;
+bottom: 550%;
+left: -87.330%;
+}
+
+
+.iconuser{
+position: sticky;
+left: 30%;
+border-radius: 150px;
+}
+
+.notipoint{
+position: absolute;
+bottom: 55%;
+right: 0.09%;
+}
+
