@@ -193,6 +193,33 @@ void CheckOutputAndHandleCompletion(const std::string& output) {
         } else {
             showClosingMessage = true;
         }
+    } else if (output.find("GitHub API error:") != std::string::npos) {
+        if (retryCount < 3) {
+            retryCount++;
+            UpdatePrimaryText(L"Reintentando actualizar... (" + std::to_wstring(retryCount) + L")");
+            Sleep(1500);
+            StartNodeProcess();
+        } else {
+            showClosingMessage = true;
+        }
+    /* } else if (output.find("Error procesando") != std::string::npos) {
+        if (retryCount < 3) {
+            retryCount++;
+            UpdatePrimaryText(L"Reintentando actualizar... (" + std::to_wstring(retryCount) + L")");
+            Sleep(1500);
+            StartNodeProcess();
+        } else {
+            showClosingMessage = true;
+        } */
+    } else if (output.find("Error al obtener commit:") != std::string::npos) {
+        if (retryCount < 3) {
+            retryCount++;
+            UpdatePrimaryText(L"Reintentando actualizar... (" + std::to_wstring(retryCount) + L")");
+            Sleep(1500);
+            StartNodeProcess();
+        } else {
+            showClosingMessage = true;
+        }
     }
 }
 
