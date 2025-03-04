@@ -8,7 +8,7 @@ const fs = require("fs");
 const os = require('os')
 const app = express();
 
-const PORT = 80;
+const PORT = 65432;
 const HOST = '0.0.0.0';
 
 const upload = multer({
