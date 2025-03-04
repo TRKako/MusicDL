@@ -85,7 +85,7 @@ async function updateChangedFiles(baseSHA, headSHA) {
           console.log(`Archivo ignorado: ${file.filename}`); // `File ignored:`
         continue;
       }
-      const localPath = path.join(__dirname, '..', '..', file.filename); // goes back to times so it downloads the updates in the main directory and not here in .\bin\
+      const localPath = path.join(__dirname, '..', '..', file.filename); // goes back two times so it downloads the updates in the main directory and not here in .\bin\
         if (file.status === 'removed') {
           if (fs.existsSync(localPath)) {
             fs.unlinkSync(localPath);
