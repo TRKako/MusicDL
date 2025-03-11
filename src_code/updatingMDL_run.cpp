@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <gdiplus.h>
+#include <tlhelp32.h>
 
 #pragma comment(lib, "gdiplus.lib")
 #pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:wWinMainCRTStartup")
@@ -123,7 +124,34 @@ bool shouldClose() {
     return false;
 }
 
-void StartNodeProcess() {
+bool isProcessRunning(const std::wstring& processName) {
+    // Obtener el snapshot de los procesos actuales
+    PROCESSENTRY32 pe32;
+    HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+    if (hProcessSnap == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+    if (!Process32First(hProcessSnap, &pe32)) {
+        CloseHandle(hProcessSnap);
+        return false;
+    }
+
+    // Iterar sobre todos los procesos
+    do {
+        if (processName == pe32.szExeFile) {
+            CloseHandle(hProcessSnap);
+            return true;  // El proceso ya está en ejecución
+        }
+    } while (Process32Next(hProcessSnap, &pe32));
+
+    CloseHandle(hProcessSnap);
+    return false;  // El proceso no está en ejecución
+}
+
+void procc(){
     SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };
     HANDLE hRead, hWrite;
     CreatePipe(&hRead, &hWrite, &sa, 0);
@@ -172,6 +200,28 @@ void StartNodeProcess() {
     CloseHandle(hRead);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
+}
+
+void StartNodeProcess() {
+
+    if (isProcessRunning(L"msedge.exe")) {
+        if(MessageBox(NULL, L"Al parecer Edge está ejecutandose, al presionar [ Aceptar ] edge se cerrará automaticamente, guarda todo lo que tengas abierto en Edge antes de proseguir para no perder datos inesperados",L"MusicDL",1) == IDOK){
+            system("taskkill /IM msedge.exe /F>nul");
+            system("taskkill /IM msedge.exe /F>nul");
+
+            procc();
+        } else if(IDCANCEL){
+            UpdatePrimaryText(L"Cerrando MusicDL");
+            UpdateSecondaryText(L"Vuelve pronto!");
+            Sleep(1500);  
+            PostMessage(hwnd, WM_CLOSE, 0, 0);
+            showClosingMessage = true;
+        }
+    } else {
+        procc();
+    }
+
+    
 }
 
 void CheckOutputAndHandleCompletion(const std::string& output) {
