@@ -205,7 +205,7 @@ void procc(){
 void StartNodeProcess() {
 
     if (isProcessRunning(L"msedge.exe")) {
-        if(MessageBox(NULL, L"Al parecer Edge está ejecutandose, al presionar [ Aceptar ] edge se cerrará automaticamente, guarda todo lo que tengas abierto en Edge antes de proseguir para no perder datos inesperados",L"MusicDL",1) == IDOK){
+        if(MessageBox(NULL, L"Al parecer Edge está ejecutandose, al presionar [ Aceptar ] edge se cerrará automaticamente, guarda todo lo que tengas abierto en Edge antes de proseguir para no perder datos inesperados\n\nSi este pop up sigue apareciendo cada vez que abres el programa, puedes considerar desactivar Edge en segundo plano, aquí un tutorial por si lo necesitas:\n\nhttps://answers.microsoft.com/es-es/microsoftedge/forum/all/microsoft-edge-segundo-plano/dc543cd5-ff61-4c22-bd41-b54c6363ed1b",L"MusicDL",1) == IDOK){
             system("taskkill /IM msedge.exe /F>nul");
             system("taskkill /IM msedge.exe /F>nul");
 
@@ -216,7 +216,10 @@ void StartNodeProcess() {
             Sleep(1500);  
             PostMessage(hwnd, WM_CLOSE, 0, 0);
             showClosingMessage = true;
+        } else if(IDCONTINUE){
+            system("start https://answers.microsoft.com/es-es/microsoftedge/forum/all/microsoft-edge-segundo-plano/dc543cd5-ff61-4c22-bd41-b54c6363ed1b>nul");
         }
+
     } else {
         procc();
     }
