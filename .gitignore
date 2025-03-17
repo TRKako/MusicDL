@@ -11,3 +11,5 @@ server/bin/last_commit_sha.txt
 -MusicDLUpdater.exe
 
 .vscode
+
+src_code/executeCPP/
